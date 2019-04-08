@@ -33,7 +33,6 @@ int main(int argc, char* argv[]) {
 		}
     		else if (menu_id==2){
                         printf("User list (id/password)\n");
-printf("count is %d\n",count);
 			for(int i=0;i<count;i++){
 				printf("[%d] %s / %s\n",i+1,userlist[i]->id,userlist[i]->password);
 			}
