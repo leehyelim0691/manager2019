@@ -1,0 +1,13 @@
+CC = gcc
+CFlags = -W -Wall
+TARGET = list
+OBJECTS = menu.o user.o main.o
+ 
+ all : $(TARGET)
+  
+ $(TARGET) : $(OBJECTS)
+	 $(CC) $(CFLAGS) -o $@ $^
+
+clean : 
+	 rm *.o list list_debug
+

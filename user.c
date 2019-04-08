@@ -1,22 +1,36 @@
 #include "user.h"
 
 int load_file(LOGIN* list[], char* filename){
-  int count=0;
-  FILE *datafile = fopen(filename, "r");
-  while(!feof(datafile)){
-    list[count]=(LOGIN*)malloc(sizeof(LOGIN));
-    fscanf(datafile,"%s %s",list[count]->id,list[count]->password);
-    count++;
-  }
-  printf("%d records read!\n",count);\
-  fclose(datafile);
-  return count;
+  int count=0,make=0,c=0;
+#ifdef DEBUG_MODE
+	FILE *datafile = fopen(filename, "r");
+         printf("DEBUG>> datafile opened! \n");
+ #endif
+ if(datafile==NULL){
+	printf("%s file not exist! make anyway? (Yes 1, No 2) >>",filename);
+	scanf("%d",&make);
+	if(make==2) return -2;
+	else if(make==1) return -1;
+} 
+while(!feof(datafile)){
+    list[c]=(LOGIN*)malloc(sizeof(LOGIN));
+    fscanf(datafile,"%s %s",list[c]->id,list[c]->password);
+	if(c>0){
+		if(list[c]->id[0]=='\0'||list[c]->password=='\0') count=c-1;
+	}
+    c++;
 }
 
-void join(LOGIN* list[], int count){
+
+  printf("%d records read!\n",count+1);
+  fclose(datafile);
+  return count+1;
+}
+
+int join(LOGIN* list[], int count){
   char id[20], pass[20];
   while(1){
-    printf("Enter new user id >> ");
+    printf("Enter new username >> ");
     scanf("%s", id);
     int dup=0;
     for(int i=0;i<count;i++){
@@ -26,6 +40,7 @@ void join(LOGIN* list[], int count){
     }
     if(dup==1){
       printf("Already exist!!\n");
+	return count;
     }
     else{
       printf("Enter password >> ");
@@ -34,7 +49,8 @@ void join(LOGIN* list[], int count){
       strcpy(list[count]->id, id);
       strcpy(list[count]->password, pass);
       printf("New user added!\n");
-      break;
+return count+1;
+     
     }
   }
 }
@@ -53,7 +69,7 @@ int login(LOGIN* list[], int count){
   }
   if(dup!=1){
     printf("No such user!!\n");
-    return -1;
+    return 0;
   }
   else{
     printf("Enter password >> ");
@@ -71,7 +87,6 @@ int login(LOGIN* list[], int count){
 
 void logout(int* is_login){
   *is_login = 0;
-  printf("Logout!!\n");
 }
 
 void save_file(LOGIN* list[], int count, char* filename){
@@ -79,6 +94,5 @@ void save_file(LOGIN* list[], int count, char* filename){
   for(int i=0; i<count; i++){
     fprintf(datafile, "%s %s\n", list[i]->id, list[i]->password);
   }
-  printf("%s Saved!\n", filename);
   fclose(datafile);
 }
